@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import sys  # Added unused import for Ruff
 
 import httpx
 from rich.console import Console
@@ -28,6 +29,16 @@ async def run_mmdl() -> None:
                 console.print(f"[red]✗[/red] Connection error: {e}")
 
     console.print("[bold yellow]Ready to download![/bold yellow]")
+
+
+def uncovered_function() -> None:
+    """This function is not covered by tests to change coverage."""
+    print("This function is not covered by tests")
+
+
+def broken_typing() -> int:
+    """This function has a type mismatch for MyPy."""
+    return "not an int"
 
 
 def main() -> None:
