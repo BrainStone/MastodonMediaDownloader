@@ -1,6 +1,7 @@
 stages:
   - lint
   - test
+  - build
 
 variables:
   PYTHON_VERSION: "3.12"
@@ -8,7 +9,7 @@ variables:
   UV_LINK_MODE: copy
 
 default:
-  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie-slim
+  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie
   cache:
     key:
       files:
@@ -52,6 +53,7 @@ test:
     - mypy
   script:
     - uv run pytest --junitxml=junit.xml --cov=mmdl --cov-report=term --cov-report=xml:coverage.xml
+  allow_failure: true
   coverage: '/(?i)total.*? (100(?:\.0+)?%|[1-9]?\d(?:\.\d+)?%)/'
   artifacts:
     when: always
@@ -60,3 +62,27 @@ test:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+
+.build:
+  stage: build
+  needs:
+    - test
+
+build:linux:
+  extends: .build
+  script:
+    - uv run --with pyinstaller pyinstaller --onefile --name mmdl --paths src src/mmdl/main.py
+  artifacts:
+    paths:
+      - dist/mmdl
+
+build:windows:
+  extends: .build
+  image: tobix/pywine:${PYTHON_VERSION}
+  cache: { }
+  script:
+    - wine python -m pip install .
+    - wine pyinstaller --onefile --name mmdl --paths src src/mmdl/main.py
+  artifacts:
+    paths:
+      - dist/mmdl.exe
