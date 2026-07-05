@@ -7,11 +7,7 @@ variables:
   UV_VERSION: "0.11.3"
 
 default:
-  image: python:${PYTHON_VERSION}-slim
-  before_script:
-    - apt-get update && apt-get install -y curl
-    - curl -LsSf https://astral.sh/uv/install.sh | sh
-    - export PATH="$HOME/.cargo/bin:$PATH"
+  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie-slim
 
 ruff:
   stage: lint
