@@ -65,7 +65,6 @@ test:
 
 build:linux:
   stage: build
-  image: ghcr.io/astral-sh/uv:python3.12-trixie-slim
   needs:
     - job: test
       optional: true
