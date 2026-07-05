@@ -79,10 +79,15 @@ build:linux:
 build:windows:
   extends: .build
   image: tobix/pywine:${PYTHON_VERSION}
-  cache: { }
   script:
-    - wine python -m pip install .
-    - wine pyinstaller --onefile --name mmdl --paths src src/mmdl/main.py
+    - apt-get update && apt-get install -y curl
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - export PATH=$HOME/.local/bin:$PATH
+    - uv export --format requirements.txt > requirements.txt
+    - WINE_SITE_PACKAGES=$(wine python -c "import site; print(site.getsitepackages()[0])")
+    - WINE_SITE_PACKAGES_UNIX=$(winepath -u "$WINE_SITE_PACKAGES")
+    - uv pip install --python-platform windows --python-version ${PYTHON_VERSION} --target "$WINE_SITE_PACKAGES_UNIX" -r requirements.txt . pyinstaller
+    - wine python -m PyInstaller --onefile --name mmdl --paths src src/mmdl/main.py
   artifacts:
     paths:
       - dist/mmdl.exe
