@@ -63,11 +63,14 @@ test:
         coverage_format: cobertura
         path: coverage.xml
 
-build:linux:
+.build:
   stage: build
   needs:
     - job: test
       optional: true
+
+build:linux:
+  extends: .build
   script:
     - uv run --with pyinstaller pyinstaller --onefile --name mmdl --paths src src/mmdl/main.py
   artifacts:
@@ -75,11 +78,9 @@ build:linux:
       - dist/mmdl
 
 build:windows:
-  stage: build
+  extends: .build
   image: tobix/pywine:${PYTHON_VERSION}
-  needs:
-    - job: test
-      optional: true
+  cache: { }
   script:
     - wine python -m pip install .
     - wine pyinstaller --onefile --name mmdl --paths src src/mmdl/main.py
