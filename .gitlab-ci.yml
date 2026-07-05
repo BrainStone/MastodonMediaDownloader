@@ -51,12 +51,7 @@ test:
     - ruff
     - mypy
   script:
-    - |
-      if [ "$PYTHON_VERSION" = "3.12" ]; then
-        uv run pytest --junitxml=junit.xml --cov=mmdl --cov-report=term --cov-report=xml:coverage.xml
-      else
-        uv run pytest --junitxml=junit.xml
-      fi
+    - uv run pytest --junitxml=junit.xml --cov=mmdl --cov-report=term --cov-report=xml:coverage.xml
   coverage: '/(?i)total.*? (100(?:\.0+)?%|[1-9]?\d(?:\.\d+)?%)/'
   artifacts:
     when: always
