@@ -66,8 +66,7 @@ test:
 .build:
   stage: build
   needs:
-    - job: test
-      optional: true
+    - test
 
 build:linux:
   extends: .build
