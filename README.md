@@ -15,7 +15,7 @@ Tool to download all media objects from any Mastodon server.
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/BrainStone/MastodonMediaDownloader.git
    cd MastodonMediaDownloader
    ```
 
