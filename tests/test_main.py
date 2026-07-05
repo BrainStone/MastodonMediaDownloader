@@ -27,3 +27,8 @@ async def test_run_mmdl_execution(
     await run_mmdl()
 
     mock_client.get.assert_called_once_with("https://httpbin.org/get")
+
+
+def test_intentional_failure() -> None:
+    """This test is intentionally failing to test the CI pipeline."""
+    assert False, "This test is intentionally failing"
