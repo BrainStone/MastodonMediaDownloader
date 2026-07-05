@@ -4,22 +4,43 @@ stages:
 
 variables:
   PYTHON_VERSION: "3.12"
-  UV_VERSION: "0.11.3"
+  UV_CACHE_DIR: .uv-cache
+  UV_LINK_MODE: copy
 
 default:
   image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie-slim
+  cache:
+    key:
+      files:
+        - uv.lock
+      prefix: ${PYTHON_VERSION}
+    paths:
+      - $UV_CACHE_DIR
 
 ruff:
   stage: lint
   needs: [ ]
   script:
-    - uv run ruff check .
+    - uv run ruff check . --output-format gitlab --output-file ruff-code-quality.json
+  allow_failure: true
+  artifacts:
+    when: always
+    reports:
+      codequality: ruff-code-quality.json
 
 mypy:
   stage: lint
   needs: [ ]
   script:
-    - uv run mypy .
+    - uv run mypy . --no-error-summary > mypy-out.txt || MYPY_EXIT=$?
+    - cat mypy-out.txt
+    - uv run mypy-gitlab-code-quality < mypy-out.txt > mypy-code-quality.json
+    - exit ${MYPY_EXIT:-0}
+  allow_failure: true
+  artifacts:
+    when: always
+    reports:
+      codequality: mypy-code-quality.json
 
 test:
   stage: test
@@ -30,4 +51,17 @@ test:
     - ruff
     - mypy
   script:
-    - uv run pytest
+    - |
+      if [ "$PYTHON_VERSION" = "3.12" ]; then
+        uv run pytest --junitxml=junit.xml --cov=mmdl --cov-report=term --cov-report=xml:coverage.xml
+      else
+        uv run pytest --junitxml=junit.xml
+      fi
+  coverage: '/(?i)total.*? (100(?:\.0+)?%|[1-9]?\d(?:\.\d+)?%)/'
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

@@ -9,6 +9,7 @@ from mmdl.main import run_mmdl
 async def test_run_mmdl_import() -> None:
     assert run_mmdl is not None
 
+
 @pytest.mark.asyncio
 @patch("mmdl.main.httpx.AsyncClient")
 @patch("mmdl.main.asyncio.sleep", return_value=None)
