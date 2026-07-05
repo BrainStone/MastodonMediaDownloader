@@ -1,0 +1,37 @@
+stages:
+  - lint
+  - test
+
+variables:
+  PYTHON_VERSION: "3.12"
+  UV_VERSION: "0.11.3"
+
+default:
+  image: python:${PYTHON_VERSION}-slim
+  before_script:
+    - apt-get update && apt-get install -y curl
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - export PATH="$HOME/.cargo/bin:$PATH"
+
+ruff:
+  stage: lint
+  needs: [ ]
+  script:
+    - uv run ruff check .
+
+mypy:
+  stage: lint
+  needs: [ ]
+  script:
+    - uv run mypy .
+
+test:
+  stage: test
+  parallel:
+    matrix:
+      - PYTHON_VERSION: [ "3.12", "3.13", "3.14" ]
+  needs:
+    - ruff
+    - mypy
+  script:
+    - uv run pytest
