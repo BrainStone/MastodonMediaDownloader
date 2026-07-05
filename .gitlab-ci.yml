@@ -9,7 +9,7 @@ variables:
   UV_LINK_MODE: copy
 
 default:
-  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie-slim
+  image: ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie
   cache:
     key:
       files:
