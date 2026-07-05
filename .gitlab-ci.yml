@@ -76,9 +76,7 @@ build:linux:
 
 build:windows:
   stage: build
-  image:
-    name: tobix/pywine:${PYTHON_VERSION}
-    entrypoint: [""]
+  image: tobix/pywine:${PYTHON_VERSION}
   needs:
     - job: test
       optional: true
