@@ -77,7 +77,7 @@ build:linux:
 build:windows:
   stage: build
   image:
-    name: tobix/pyinstaller-windows:python3
+    name: tobix/pywine:${PYTHON_VERSION}
     entrypoint: [""]
   needs:
     - job: test
