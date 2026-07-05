@@ -21,7 +21,7 @@ Tool to download all media objects from any Mastodon server.
 
 2. Install dependencies and set up the environment:
    ```bash
-   uv sync
+   uv sync --no-dev
    ```
 
 3. (Optional) Install as a standalone CLI command:
