@@ -1,6 +1,6 @@
-import argparse
 import asyncio
 
+import click
 import httpx
 from rich.console import Console
 from rich.status import Status
@@ -30,9 +30,9 @@ async def run_mmdl() -> None:
     console.print("[bold yellow]Ready to download![/bold yellow]")
 
 
+@click.command()
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Mastodon Media Downloader (mmdl)")
-    parser.parse_args()
+    """Mastodon Media Downloader (mmdl)"""
     asyncio.run(run_mmdl())
 
 
